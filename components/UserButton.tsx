@@ -12,30 +12,61 @@ import UserAvatar from "./UserAvatar"
 import { Session } from "next-auth"
 import { Button } from "./ui/button"
 import { signIn, signOut } from "next-auth/react"
+import { useSubscriptionStore } from "@/store/store"
+import LoadingSpinner from "./LoadingSpinner"
+import { StarIcon } from "lucide-react"
   
 
 
 function UserButton({session}: {session: Session | null}) {
-  //Subscription listenerr
+  const subscription = useSubscriptionStore((state) => state.subscription)
+
   if (!session) return (
     <Button variant={'outline'} onClick={() => signIn()}>
       Sign In
     </Button>
   )
     // Session data.. 
-  return session && (
-        <DropdownMenu>
+    return (
+      <DropdownMenu>
+        {session && (
+          <>
             <DropdownMenuTrigger>
-                <UserAvatar  name={session.user?.name} image={session.user?.image}/>
+              <UserAvatar name={session.user.name} image={session.user.image} />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuLabel>{session.user?.name}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut}>Sign Out</DropdownMenuItem>
+              <DropdownMenuLabel>Hi {session.user.name}!</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+  
+              {subscription === undefined && (
+                <DropdownMenuItem>
+                  <LoadingSpinner />
+                </DropdownMenuItem>
+              )}
+  
+              {subscription?.role === "pro" && (
+                <>
+                  <DropdownMenuLabel className="text-xs flex items-center justify-center space-x-1 text-[#E935C1] animate-pulse">
+                    <StarIcon fill="#E935C1" />
+                    <p>PRO</p>
+                  </DropdownMenuLabel>
+  
+                  <DropdownMenuSeparator />
+  
+                  <DropdownMenuItem>
+                    {/* <ManageAccountButton /> */}
+                  </DropdownMenuItem>
+                </>
+              )}
+  
+              <DropdownMenuItem onClick={() => signOut()}>
+                Sign Out
+              </DropdownMenuItem>
             </DropdownMenuContent>
-    </DropdownMenu>
-
-  )
-}
+          </>
+        )}
+      </DropdownMenu>
+    );
+  }
 
 export default UserButton
