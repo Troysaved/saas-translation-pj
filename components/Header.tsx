@@ -5,13 +5,12 @@ import { authOptions } from "@/auth";
 import { MessagesSquareIcon } from "lucide-react";
 import Logo from "./Logo";
 import DarkModeToggle from "./DarkModeToggle";
-import CreateChatButton from "./CreateChatButton";
 import UpgradeBanner from "./UpgradeBanner";
+import LanguageSelect from "./LanguageSelect";
+import CreateChatButton from "./CreateChatButton";
 
 async function Header() {
   const session = await getServerSession(authOptions);
-
-
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-900">
@@ -19,6 +18,7 @@ async function Header() {
         <Logo />
 
         <div className="flex-1 flex items-center justify-end  space-x-4">
+          <LanguageSelect />
 
           {session ? (
             <>
@@ -37,7 +37,7 @@ async function Header() {
         </div>
       </nav>
 
-        <UpgradeBanner/>
+      <UpgradeBanner />
     </header>
   );
 }
